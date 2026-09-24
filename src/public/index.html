@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PlayTracker | Gestión Deportiva</title>
+    <style>
+        :root { --primary: #00ff88; --bg: #0f172a; --panel: #1e293b; --text: #f8fafc; }
+        body { font-family: 'Segoe UI', system-ui, sans-serif; background-color: var(--bg); color: var(--text); margin: 0; display: flex; justify-content: center; align-items: center; min-height: 100vh; }
+        
+        /* Contenedor Principal */
+        .app-container { width: 100%; max-width: 1000px; background: var(--panel); border-radius: 12px; overflow: hidden; box-shadow: 0 10px 30px rgba(0,0,0,0.5); display: flex; flex-direction: column; min-height: 600px; }
+        
+        /* Cabecera */
+        header { background: #0b1120; padding: 20px; text-align: center; border-bottom: 2px solid var(--primary); }
+        header h1 { margin: 0; color: var(--primary); font-size: 24px; text-transform: uppercase; letter-spacing: 2px; }
+        
+        /* Pantalla de Login */
+        #login-view { padding: 40px; text-align: center; margin: auto; }
+        .input-group { margin-bottom: 15px; }
+        input { padding: 12px; width: 250px; border-radius: 6px; border: 1px solid #334155; background: #0f172a; color: white; outline: none; }
+        button { background: var(--primary); color: #0f172a; border: none; padding: 12px 24px; border-radius: 6px; font-weight: bold; cursor: pointer; transition: 0.3s; width: 275px; text-transform: uppercase; }
+        button:hover { background: #00cc6a; transform: translateY(-2px); }
+        #login-error { color: #ef4444; margin-top: 10px; font-size: 14px; display: none; }
+        
+        /* Pantalla de Dashboard */
+        #dashboard-view { display: none; padding: 20px; flex-grow: 1; }
+        .welcome-bar { display: flex; justify-content: space-between; align-items: center; background: #334155; padding: 15px; border-radius: 8px; margin-bottom: 20px; }
+        .btn-logout { background: #ef4444; color: white; width: auto; padding: 8px 15px; font-size: 12px; }
+        
+        /* Módulos */
+        .modules-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+        .module-card { background: #0f172a; padding: 20px; border-radius: 8px; border-left: 4px solid var(--primary); }
+        .module-card h3 { margin-top: 0; color: var(--primary); }
+        
+        /* Pizarra simulada */
+        .canvas-mockup { width: 100%; height: 200px; background: #22c55e; border-radius: 6px; position: relative; margin-top: 15px; background-image: linear-gradient(rgba(255,255,255,0.3) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.3) 1px, transparent 1px); background-size: 20px 20px; display: flex; justify-content: center; align-items: center; color: white; font-weight: bold; text-shadow: 1px 1px 2px black; }
+    </style>
+</head>
+<body>
+
+<div class="app-container">
+    <header>
+        <h1>🏈 PlayTracker PRO</h1>
+    </header>
+
+    <!-- PANTALLA DE LOGIN -->
+    <div id="login-view">
+        <h2>Acceso al Sistema</h2>
+        <p style="color: #94a3b8; font-size: 14px; margin-bottom: 20px;">Prueba con usuario: <b>coach</b> o <b>atleta</b> (Pass: 123)</p>
+        <div class="input-group">
+            <input type="text" id="username" placeholder="Usuario" autocomplete="off">
+        </div>
+        <div class="input-group">
+            <input type="password" id="password" placeholder="Contraseña">
+        </div>
+        <button onclick="iniciarSesion()">Iniciar Sesión</button>
+        <p id="login-error">Credenciales incorrectas.</p>
+    </div>
+
+    <!-- PANTALLA PRINCIPAL (DASHBOARD) -->
+    <div id="dashboard-view">
+        <div class="welcome-bar">
+            <div>
+                <h2 style="margin:0;">Panel de Control</h2>
+                <span id="user-role-badge" style="color:var(--primary); font-size: 14px;"></span>
+            </div>
+            <button class="btn-logout" onclick="cerrarSesion()">Cerrar Sesión</button>
+        </div>
+
+        <div class="modules-grid">
+            <!-- Módulo Playbook -->
+            <div class="module-card">
+                <h3>📖 Pizarra Táctica (Playbook)</h3>
+                <p id="playbook-status" style="font-size: 14px; color: #cbd5e1;">Verificando permisos...</p>
+                <div class="canvas-mockup" id="canvas-area" style="display:none;">
+                    Zona de Dibujo Activa
+                </div>
+            </div>
+
+            <!-- Módulo Asistencia -->
+            <div class="module-card">
+                <h3>✅ Asistencia y Condición Física</h3>
+                <p style="font-size: 14px; color: #cbd5e1;">Registro diario para entrenamientos.</p>
+                <select id="fatiga" style="width:100%; padding: 10px; margin-bottom: 15px; border-radius: 4px; background: #1e293b; color: white; border: 1px solid #334155;">
+                    <option value="1">Nivel de Fatiga: 1 (Al 100%)</option>
+                    <option value="3">Nivel de Fatiga: 3 (Molestia leve)</option>
+                    <option value="5">Nivel de Fatiga: 5 (Alerta de lesión)</option>
+                </select>
+                <button onclick="registrarAsistencia()" id="btn-asistencia" style="width:100%;">Registrar Asistencia Hoy</button>
+                <p id="asistencia-status" style="color: var(--primary); font-size: 14px; display: none; margin-top: 10px;"></p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Conexión con tu API Backend
+    async function iniciarSesion() {
+        const user = document.getElementById('username').value;
+        const pass = document.getElementById('password').value;
+        
+        try {
+            const res = await fetch('/api/login', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ username: user, password: pass })
+            });
+            
+            const data = await res.json();
+            
+            if (res.ok) {
+                // Login exitoso: Guardar Token y mostrar Dashboard
+                localStorage.setItem('playtracker_token', data.token);
+                localStorage.setItem('playtracker_role', data.role);
+                document.getElementById('login-error').style.display = 'none';
+                mostrarDashboard(data.role);
+            } else {
+                // Error de credenciales
+                document.getElementById('login-error').innerText = data.error;
+                document.getElementById('login-error').style.display = 'block';
+            }
+        } catch (error) {
+            alert('Error de conexión con el servidor.');
+        }
+    }
+
+    async function mostrarDashboard(role) {
+        document.getElementById('login-view').style.display = 'none';
+        document.getElementById('dashboard-view').style.display = 'flex';
+        document.getElementById('dashboard-view').style.flexDirection = 'column';
+        document.getElementById('user-role-badge').innerText = 'Rol activo: ' + role;
+
+        // Comprobar permisos del Playbook llamando a la API protegida
+        const token = localStorage.getItem('playtracker_token');
+        const res = await fetch('/api/playbook', {
+            headers: { 'Authorization': 'Bearer ' + token }
+        });
+        
+        const data = await res.json();
+        const playbookStatus = document.getElementById('playbook-status');
+        const canvasArea = document.getElementById('canvas-area');
+
+        if (res.ok) {
+            playbookStatus.innerText = data.message;
+            playbookStatus.style.color = '#00ff88';
+            canvasArea.style.display = 'flex'; // Mostrar la cancha verde
+        } else {
+            playbookStatus.innerText = "🔒 Bloqueado: " + data.error;
+            playbookStatus.style.color = '#ef4444';
+            canvasArea.style.display = 'none';
+        }
+    }
+
+    async function registrarAsistencia() {
+        const token = localStorage.getItem('playtracker_token');
+        const res = await fetch('/api/asistencia', {
+            method: 'POST',
+            headers: { 'Authorization': 'Bearer ' + token }
+        });
+        
+        const data = await res.json();
+        const statusEl = document.getElementById('asistencia-status');
+        
+        if (res.ok) {
+            statusEl.innerText = data.message;
+            statusEl.style.color = '#00ff88';
+        } else {
+            statusEl.innerText = "🔒 Error: " + data.error;
+            statusEl.style.color = '#ef4444';
+        }
+        statusEl.style.display = 'block';
+    }
+
+    function cerrarSesion() {
+        localStorage.removeItem('playtracker_token');
+        localStorage.removeItem('playtracker_role');
+        location.reload(); // Recargar la página
+    }
+
+    // Comprobar si ya estaba logueado al refrescar la página
+    if(localStorage.getItem('playtracker_token')) {
+        mostrarDashboard(localStorage.getItem('playtracker_role'));
+    }
+</script>
+
+</body>
+</html>

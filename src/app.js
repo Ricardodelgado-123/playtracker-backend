@@ -1,8 +1,12 @@
 const express = require('express');
+const path = require('path');
 const { login, authMiddleware } = require('./auth');
 
 const app = express();
-app.use(express.json()); // Para poder recibir JSON
+app.use(express.json());
+
+// NUEVO: Le decimos a Express que muestre la carpeta "public" en el navegador
+app.use(express.static(path.join(__dirname, 'public')));
 
 // Ruta 1: Iniciar sesión y obtener JWT
 app.post('/api/login', (req, res) => {
@@ -15,14 +19,14 @@ app.post('/api/login', (req, res) => {
     }
 });
 
-// Ruta 2: Ruta protegida (Solo Head Coach)
+// Ruta protegida (Solo Head Coach)
 app.get('/api/playbook', authMiddleware('Head Coach'), (req, res) => {
-    res.status(200).json({ message: 'Bienvenido Coach. Aqui esta el Playbook.' });
+    res.status(200).json({ message: 'Playbook Táctico Cargado. Listo para diseñar jugadas.' });
 });
 
-// Ruta 3: Ruta protegida (Solo Jugadores)
+// Ruta protegida (Solo Jugadores)
 app.post('/api/asistencia', authMiddleware('Jugador'), (req, res) => {
-    res.status(200).json({ message: 'Asistencia registrada con exito.' });
+    res.status(200).json({ message: 'Asistencia y estado de fatiga registrados con éxito.' });
 });
 
 module.exports = app;
