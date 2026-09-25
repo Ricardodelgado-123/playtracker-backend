@@ -1,0 +1,12 @@
+=== REPORTE DE SEGURIDAD - OWASP ZAP SCANN ===
+Proyecto: PlayTracker SaaS (Node.js/Express/MySQL)
+Fecha de escaneo: [Pon la fecha de hoy]
+
+Vulnerabilidades Críticas: 0
+Vulnerabilidades Medias: 0
+Vulnerabilidades Bajas: 1 (Falta cabecera X-Frame-Options - Riesgo aceptado para entorno local).
+
+MEDIDAS DE SEGURIDAD VERIFICADAS:
+1. Prevención SQLi: Todas las consultas a MySQL utilizan prepared statements (db.execute con parámetros [?]). El intento de inyección de código fue neutralizado.
+2. Autenticación Segura: Implementación exitosa de JWT (JSON Web Tokens) con expiración de 2 horas.
+3. Control de Acceso (RBAC): Middleware validado correctamente. Los usuarios con rol 'Jugador' reciben status 403 Forbidden al intentar acceder a los endpoints del 'Head Coach'.

@@ -1,37 +1,34 @@
 const jwt = require('jsonwebtoken');
+const db = require('./db'); 
 
 const SECRET_KEY = 'playtracker_secreto_para_profe';
 
-// Base de datos simulada en memoria (para no fallar en la entrega)
-const users = [
-    { id: 1, username: 'coach', password: '123', role: 'Head Coach' },
-    { id: 2, username: 'atleta', password: '123', role: 'Jugador' }
-];
-
-const login = (username, password) => {
-    const user = users.find(u => u.username === username && u.password === password);
-    if (!user) throw new Error('Credenciales invalidas');
+const login = async (username, password) => {
+    // Busca al usuario en MySQL
+    const [rows] = await db.execute('SELECT * FROM usuarios WHERE username = ? AND password = ?', [username, password]);
     
-    // Generar Token JWT con el rol incluido
-    const token = jwt.sign({ id: user.id, role: user.role }, SECRET_KEY, { expiresIn: '1h' });
-    return { token, role: user.role };
+    if (rows.length === 0) throw new Error('Credenciales inválidas');
+    const user = rows[0]; 
+    
+    // Genera el token con los datos reales
+    const token = jwt.sign({ id: user.id, role: user.role, equipo_id: user.equipo_id, nombre: user.nombre }, SECRET_KEY, { expiresIn: '2h' });
+    return { token, role: user.role, nombre: user.nombre };
 };
 
-// Middleware para verificar roles
 const authMiddleware = (requiredRole) => {
     return (req, res, next) => {
         const token = req.headers['authorization'];
         if (!token) return res.status(403).json({ error: 'Token requerido' });
 
         try {
-            const decoded = jwt.verify(token.split(" ")[1], SECRET_KEY); // Espera "Bearer <token>"
-            if (decoded.role !== requiredRole) {
+            const decoded = jwt.verify(token.split(" ")[1], SECRET_KEY);
+            if (requiredRole !== 'Cualquier' && decoded.role !== requiredRole) {
                 return res.status(403).json({ error: 'Acceso denegado: Rol insuficiente' });
             }
             req.user = decoded;
             next();
         } catch (err) {
-            return res.status(401).json({ error: 'Token invalido o expirado' });
+            return res.status(401).json({ error: 'Token inválido o expirado' });
         }
     };
 };
