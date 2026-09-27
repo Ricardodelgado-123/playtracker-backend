@@ -1,4 +1,4 @@
-name: PlayTracker CI/CD
+name: PlayTracker CI/CD Pipeline
 
 on:
   push:
@@ -9,19 +9,21 @@ on:
 jobs:
   build-and-test:
     runs-on: ubuntu-latest
+
     steps:
-    - uses: actions/checkout@v3
-    
+    - name: Clonar el repositorio
+      uses: actions/checkout@v3
+
     - name: Configurar Node.js
       uses: actions/setup-node@v3
       with:
         node-version: '18.x'
-        
+
     - name: Instalar Dependencias
       run: npm install
-      
-    - name: Ejecutar Pruebas y Generar Reporte de Cobertura
+
+    - name: Ejecutar Pruebas Unitarias (Jest >= 80% Coverage)
       run: npm test
-      
-    - name: Simular Despliegue (CD)
-      run: echo "Despliegue simulado exitoso. Software listo para producción."
+
+    - name: Simulación de Despliegue
+      run: echo "Pruebas exitosas. Listo para desplegar en Producción."

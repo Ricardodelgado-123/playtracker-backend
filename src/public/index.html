@@ -1,93 +1,493 @@
+
 <!DOCTYPE html>
 <html lang="es">
 <head>
+
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>PlayTracker | SaaS Deportivo</title>
+    <title>PlayTracker | SaaS Deportivo PRO</title>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <style>
-        :root {
-            --bg-base: #0f172a; --bg-panel: #1e293b; --bg-card: #0f172a;
-            --primary: #3b82f6; --accent: #10b981; --warning: #f59e0b; --danger: #ef4444;
-            --training: #0ea5e9; --game: #f43f5e; --text-main: #f8fafc; --text-muted: #94a3b8;
+        :root { 
+            --bg-base: #0f172a; 
+            --bg-panel: #1e293b; 
+            --bg-card: #0f172a; 
+            --primary: #3b82f6; 
+            --accent: #10b981; 
+            --warning: #f59e0b; 
+            --danger: #ef4444; 
+            --training: #0ea5e9; 
+            --game: #f43f5e; 
+            --text-main: #f8fafc; 
+            --text-muted: #94a3b8; 
         }
-        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', system-ui, sans-serif; user-select: none; }
-        body { background-color: var(--bg-base); color: var(--text-main); display: flex; justify-content: center; min-height: 100vh; padding: 20px; }
+
+        * { 
+            box-sizing: border-box; 
+            margin: 0; 
+            padding: 0; 
+            font-family: 'Segoe UI', system-ui, sans-serif; 
+            user-select: none; 
+        }
+
+        body { 
+            background-color: var(--bg-base); 
+            color: var(--text-main); 
+            display: flex; 
+            justify-content: center; 
+            min-height: 100vh; 
+            padding: 20px; 
+        }
         
-        .app-container { width: 100%; max-width: 1200px; background: var(--bg-panel); border-radius: 12px; overflow: hidden; display: flex; flex-direction: column; min-height: 700px; border: 1px solid #334155; }
-        header { background: #0b1120; padding: 20px 30px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #334155; }
-        .logo { font-size: 22px; font-weight: 800; color: white; }
-        .logo i { color: var(--primary); }
-        .user-controls { display: none; align-items: center; gap: 15px; }
-        .btn-logout { background: transparent; border: 1px solid var(--danger); color: var(--danger); padding: 5px 15px; border-radius: 6px; cursor: pointer; }
+        .app-container { 
+            width: 100%; 
+            max-width: 1200px; 
+            background: var(--bg-panel); 
+            border-radius: 12px; 
+            overflow: hidden; 
+            display: flex; 
+            flex-direction: column; 
+            min-height: 700px; 
+            border: 1px solid #334155; 
+        }
 
-        #login-view { display: flex; flex-direction: column; align-items: center; justify-content: center; flex-grow: 1; }
-        .login-box { background: var(--bg-card); padding: 40px; border-radius: 12px; width: 350px; text-align: center; border: 1px solid #334155; }
-        .login-box input { width: 100%; padding: 12px; margin-bottom: 15px; border-radius: 8px; border: 1px solid #334155; background: var(--bg-panel); color: white; outline: none; }
-        .login-box button { width: 100%; padding: 12px; background: var(--primary); color: white; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; }
+        header { 
+            background: #0b1120; 
+            padding: 20px 30px; 
+            display: flex; 
+            justify-content: space-between; 
+            border-bottom: 1px solid #334155; 
+            align-items: center; 
+        }
 
-        #dashboard-view { display: none; padding: 30px; gap: 25px; grid-template-columns: 1fr 1fr; flex-grow: 1; align-items: start; }
-        @media (max-width: 900px) { #dashboard-view { grid-template-columns: 1fr; } }
+        .logo { 
+            font-size: 22px; 
+            font-weight: bold; 
+        } 
+
+        .logo i { 
+            color: var(--primary); 
+        }
+
+        .user-controls { 
+            display: none; 
+            align-items: center; 
+            gap: 15px; 
+        }
+
+        .btn-logout { 
+            background: transparent; 
+            border: 1px solid var(--danger); 
+            color: var(--danger); 
+            padding: 5px 15px; 
+            border-radius: 6px; 
+            cursor: pointer; 
+        }
         
-        .card { background: var(--bg-card); border-radius: 12px; padding: 20px; border: 1px solid #334155; display: none; }
-        .card-header { display: flex; align-items: center; gap: 10px; margin-bottom: 20px; padding-bottom: 15px; border-bottom: 1px solid #334155; font-size: 18px; font-weight: bold; }
+        /* Formularios de Autenticación */
+        #login-view { 
+            display: flex; 
+            flex-direction: column; 
+            align-items: center; 
+            justify-content: center; 
+            flex-grow: 1; 
+        }
 
-        /* Calendario */
-        .event-list { display: flex; flex-direction: column; gap: 15px; }
-        .event-item { background: var(--bg-panel); padding: 15px; border-radius: 8px; position: relative; overflow: hidden; }
-        .event-type-bar { position: absolute; left: 0; top: 0; bottom: 0; width: 5px; }
+        .login-box { 
+            background: var(--bg-card); 
+            padding: 30px; 
+            border-radius: 12px; 
+            width: 350px; 
+            border: 1px solid #334155; 
+            text-align: center; 
+        }
+
+        .login-box input { 
+            width: 100%; 
+            padding: 12px; 
+            margin-bottom: 15px; 
+            border-radius: 8px; 
+            border: 1px solid #334155; 
+            background: var(--bg-panel); 
+            color: white; 
+            outline: none; 
+        }
+
+        .login-box button { 
+            width: 100%; 
+            padding: 12px; 
+            background: var(--primary); 
+            color: white; 
+            border: none; 
+            border-radius: 8px; 
+            font-weight: bold; 
+            cursor: pointer; 
+        }
+
+        .toggle-link { 
+            color: var(--primary); 
+            cursor: pointer; 
+            font-size: 14px; 
+            margin-top: 15px; 
+            display: block; 
+        }
+        
+        /* Layout del Dashboard */
+        #dashboard-view { 
+            display: none; 
+            padding: 30px; 
+            gap: 25px; 
+            grid-template-columns: 1fr 1fr; 
+            flex-grow: 1; 
+            align-items: start; 
+        }
+
+        @media (max-width: 900px) { 
+            #dashboard-view { 
+                grid-template-columns: 1fr; 
+            } 
+        }
+
+        .card { 
+            background: var(--bg-card); 
+            border-radius: 12px; 
+            padding: 20px; 
+            border: 1px solid #334155; 
+            display: block; 
+            margin-bottom: 25px; 
+        }
+
+        .card-header { 
+            display: flex; 
+            align-items: center; 
+            gap: 10px; 
+            margin-bottom: 20px; 
+            border-bottom: 1px solid #334155; 
+            padding-bottom: 15px; 
+            font-weight: bold; 
+            font-size: 18px; 
+        }
+
+        /* Componentes de Formularios */
+        .form-group { 
+            margin-bottom: 15px; 
+            text-align: left; 
+        }
+
+        .form-group label { 
+            display: block; 
+            font-size: 13px; 
+            color: var(--text-muted); 
+            margin-bottom: 5px; 
+        }
+
+        .form-control { 
+            width: 100%; 
+            padding: 10px; 
+            background: var(--bg-panel); 
+            color: white; 
+            border: 1px solid #334155; 
+            border-radius: 6px; 
+        }
+
+        .btn-submit { 
+            background: var(--accent); 
+            color: #000; 
+            border: none; 
+            padding: 10px 15px; 
+            border-radius: 6px; 
+            font-weight: bold; 
+            cursor: pointer; 
+            width: 100%; 
+        }
+
+        .btn-danger { 
+            background: var(--danger); 
+            color: white; 
+            border: none; 
+            padding: 10px 15px; 
+            border-radius: 6px; 
+            font-weight: bold; 
+            cursor: pointer; 
+            width: 100%; 
+        }
+
+        .alert-msg { 
+            margin-top: 10px; 
+            font-size: 13px; 
+            font-weight: bold; 
+            display: none; 
+            padding: 8px; 
+            border-radius: 4px; 
+        }
+
+        /* Tabla de Posiciones */
+        .standings-table { 
+            width: 100%; 
+            border-collapse: collapse; 
+            font-size: 14px; 
+            text-align: center; 
+        }
+
+        .standings-table th { 
+            background-color: #d97706; 
+            color: white; 
+            padding: 10px; 
+            font-weight: bold; 
+        }
+
+        .standings-table tr:nth-child(odd) { 
+            background-color: #1e293b; 
+        }
+
+        .standings-table tr:nth-child(even) { 
+            background-color: #0f172a; 
+        }
+
+        .standings-table td { 
+            padding: 10px; 
+            border: 1px solid #334155; 
+        }
+
+        .col-equipo { 
+            text-align: left; 
+            font-weight: bold; 
+            color: var(--warning); 
+        }
+
+        /* Historial y Predicciones */
+        .history-list { 
+            display: flex; 
+            flex-direction: column; 
+            gap: 10px; 
+            margin-top: 15px; 
+        }
+
+        .history-item { 
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center; 
+            background: var(--bg-panel); 
+            padding: 10px 15px; 
+            border-radius: 8px; 
+            border: 1px solid #334155; 
+            font-size: 14px; 
+        }
+
+        .btn-undo { 
+            background: transparent; 
+            border: 1px solid var(--danger); 
+            color: var(--danger); 
+            padding: 5px 10px; 
+            border-radius: 4px; 
+            cursor: pointer; 
+            font-size: 12px; 
+        }
+
+        .pred-item { 
+            margin-bottom: 15px; 
+        }
+
+        .pred-header { 
+            display: flex; 
+            justify-content: space-between; 
+            font-size: 13px; 
+            margin-bottom: 5px; 
+            font-weight: bold; 
+        }
+
+        .pred-bar-bg { 
+            width: 100%; 
+            background: #334155; 
+            height: 10px; 
+            border-radius: 5px; 
+            overflow: hidden; 
+        }
+
+        .pred-bar-fill { 
+            height: 100%; 
+            background: linear-gradient(90deg, var(--primary), var(--accent)); 
+            transition: width 1s ease-in-out; 
+        }
+
+        /* Eventos y Calendario */
+        .event-item { 
+            background: var(--bg-panel); 
+            padding: 15px; 
+            border-radius: 8px; 
+            position: relative; 
+            overflow: hidden; 
+            margin-bottom: 15px; 
+        }
+
+        .event-type-bar { 
+            position: absolute; 
+            left: 0; 
+            top: 0; 
+            bottom: 0; 
+            width: 5px; 
+        }
+
         .type-entrenamiento { background-color: var(--training); }
         .type-partido { background-color: var(--game); }
-        .event-title { font-size: 18px; font-weight: bold; margin-bottom: 8px; margin-left: 10px; }
-        .event-details { display: flex; justify-content: space-between; color: var(--text-muted); font-size: 14px; margin-bottom: 15px; margin-left: 10px; }
-        .maps-link { color: var(--primary); text-decoration: none; font-weight: bold; background: rgba(59, 130, 246, 0.1); padding: 4px 8px; border-radius: 4px; }
-        .attendance-actions { display: flex; gap: 10px; margin-left: 10px; }
-        .btn-asisto { background: var(--accent); color: #000; border: none; padding: 8px 15px; border-radius: 6px; cursor: pointer; font-weight: bold; }
-        .btn-no-asisto { background: var(--danger); color: white; border: none; padding: 8px 15px; border-radius: 6px; cursor: pointer; font-weight: bold; }
-        .coach-stats { margin-left: 10px; display: flex; gap: 15px; font-size: 14px; background: rgba(0,0,0,0.2); padding: 10px; border-radius: 6px; }
+        
+        .maps-link { 
+            color: var(--primary); 
+            text-decoration: none; 
+            font-weight: bold; 
+            background: rgba(59, 130, 246, 0.1); 
+            padding: 4px 8px; 
+            border-radius: 4px; 
+        }
+
+        .attendance-actions { 
+            display: flex; 
+            gap: 10px; 
+            margin-top: 10px; 
+        }
+
+        .btn-asisto { 
+            background: var(--accent); 
+            color: #000; 
+            border: none; 
+            padding: 8px 15px; 
+            border-radius: 6px; 
+            cursor: pointer; 
+            font-weight: bold; 
+        }
+
+        .btn-no-asisto { 
+            background: var(--danger); 
+            color: white; 
+            border: none; 
+            padding: 8px 15px; 
+            border-radius: 6px; 
+            cursor: pointer; 
+            font-weight: bold; 
+        }
+
+        .coach-stats { 
+            display: flex; 
+            gap: 15px; 
+            font-size: 14px; 
+            background: rgba(0,0,0,0.2); 
+            padding: 10px; 
+            border-radius: 6px; 
+            margin-top: 10px; 
+        }
+
         .stat-green { color: var(--accent); font-weight: bold; }
         .stat-red { color: var(--danger); font-weight: bold; }
 
-        /* Pestañas del Playbook */
-        .tabs-container { display: flex; gap: 5px; margin-bottom: 15px; border-bottom: 2px solid #334155; padding-bottom: 5px; overflow-x: auto; }
-        .play-tab { background: var(--bg-panel); padding: 8px 15px; border-radius: 6px 6px 0 0; cursor: pointer; font-size: 14px; color: var(--text-muted); border: 1px solid transparent; border-bottom: none; white-space: nowrap; transition: 0.2s; }
-        .play-tab.active { background: var(--primary); color: white; font-weight: bold; border-color: var(--primary); }
-        .play-tab-add { background: transparent; color: var(--accent); padding: 8px 12px; cursor: pointer; font-weight: bold; border-radius: 6px; }
-        .play-tab-add:hover { background: rgba(16, 185, 129, 0.1); }
+        /* Pizarra Táctica y Roster CRUD */
+        .tabs-container { 
+            display: flex; 
+            gap: 5px; 
+            margin-bottom: 15px; 
+            border-bottom: 2px solid #334155; 
+            padding-bottom: 5px; 
+            overflow-x: auto; 
+        }
 
-        /* Creador de Alineación */
-        .roster-container { display: flex; gap: 10px; margin-bottom: 15px; overflow-x: auto; padding-bottom: 10px; min-height: 45px; }
-        .player-chip { background: var(--primary); padding: 5px 12px; border-radius: 20px; font-size: 13px; cursor: pointer; white-space: nowrap; display: inline-block; box-shadow: 0 2px 5px rgba(0,0,0,0.3); transition: transform 0.1s; }
-        .player-chip.selected { background: var(--warning); color: #000; font-weight: bold; transform: scale(1.1); border: 2px solid white; }
+        .play-tab { 
+            background: var(--bg-panel); 
+            padding: 8px 15px; 
+            border-radius: 6px 6px 0 0; 
+            cursor: pointer; 
+            font-size: 14px; 
+            color: var(--text-muted); 
+            transition: 0.2s; 
+        }
+
+        .play-tab.active { 
+            background: var(--primary); 
+            color: white; 
+            font-weight: bold; 
+        }
+
+        .play-tab-add { 
+            background: transparent; 
+            color: var(--accent); 
+            padding: 8px 12px; 
+            cursor: pointer; 
+            font-weight: bold; 
+            border-radius: 6px; 
+        }
         
-        /* Medio Campo Realista CSS */
+        .roster-container { 
+            display: flex; 
+            gap: 10px; 
+            margin-bottom: 15px; 
+            overflow-x: auto; 
+            padding-bottom: 10px; 
+            min-height: 45px; 
+            align-items: center; 
+        }
+
+        .player-chip { 
+            display: flex; 
+            align-items: center; 
+            gap: 8px; 
+            background: var(--primary); 
+            padding: 5px 12px; 
+            border-radius: 20px; 
+            font-size: 13px; 
+        }
+
+        .player-chip.selected { 
+            background: var(--warning); 
+            color: #000; 
+            font-weight: bold; 
+            border: 2px solid white; 
+        }
+
+        .action-icon { 
+            cursor: pointer; 
+            opacity: 0.7; 
+            font-size: 12px; 
+        } 
+
+        .action-icon:hover { 
+            opacity: 1; 
+            color: white; 
+        }
+        
+        /* Medio Campo CSS Realista */
         .field-map { 
-            width: 100%; height: 320px; 
-            background-color: #1a5c31; /* Verde césped */
+            width: 100%; 
+            height: 320px; 
+            background-color: #1a5c31; 
             border: 3px solid white; 
-            border-bottom: 8px solid white; /* Línea de gol simulada */
+            border-bottom: 8px solid white; 
             position: relative; 
-            overflow: hidden;
-            background-image: 
-                linear-gradient(to bottom, rgba(255,255,255,0.4) 2px, transparent 2px), /* Yardas horizontales */
-                linear-gradient(to right, transparent 48%, rgba(255,255,255,0.2) 48%, rgba(255,255,255,0.2) 52%, transparent 52%); /* Hash marks centrales */
-            background-size: 100% 20%, 100% 100%;
-            box-shadow: inset 0 0 40px rgba(0,0,0,0.5);
+            overflow: hidden; 
+            background-image: linear-gradient(to bottom, rgba(255,255,255,0.4) 2px, transparent 2px), linear-gradient(to right, transparent 48%, rgba(255,255,255,0.2) 48%, rgba(255,255,255,0.2) 52%, transparent 52%); 
+            background-size: 100% 20%, 100% 100%; 
         }
-        
-        /* Nodos arrastrables */
+
         .position-node { 
-            position: absolute; width: 45px; height: 45px; 
-            background: rgba(0,0,0,0.8); border: 2px dashed rgba(255,255,255,0.6); 
-            border-radius: 50%; display: flex; justify-content: center; align-items: center; 
-            color: white; font-size: 11px; font-weight: bold; cursor: grab; text-align: center; 
-            transition: background 0.2s, border 0.2s; 
-            box-shadow: 0 4px 6px rgba(0,0,0,0.5); z-index: 10;
+            position: absolute; 
+            width: 45px; 
+            height: 45px; 
+            background: rgba(0,0,0,0.8); 
+            border: 2px dashed rgba(255,255,255,0.6); 
+            border-radius: 50%; 
+            display: flex; 
+            justify-content: center; 
+            align-items: center; 
+            color: white; 
+            font-size: 11px; 
+            font-weight: bold; 
+            cursor: grab; 
+            text-align: center; 
         }
-        .position-node:active { cursor: grabbing; }
-        .position-node.assigned { background: var(--primary); border: 2px solid white; }
-        
+
+        .position-node.assigned { 
+            background: var(--primary); 
+            border: 2px solid white; 
+        }
     </style>
+    
 </head>
 <body>
 
@@ -101,356 +501,873 @@
     </header>
 
     <div id="login-view">
-        <div class="login-box">
-            <h2 style="margin-bottom:20px;">Acceso a Liga</h2>
-            <input type="text" id="username" placeholder="Usuario (coach, atleta...)">
-            <input type="password" id="password" placeholder="Contraseña">
+        <div class="login-box" id="form-login">
+            <h2 style="margin-bottom:20px;">Acceso al Sistema</h2>
+            <input type="text" id="log-username" placeholder="Usuario">
+            <input type="password" id="log-password" placeholder="Contraseña">
             <button onclick="iniciarSesion()">Entrar</button>
-            <p id="login-error" style="color:var(--danger); margin-top:10px; display:none;">Error de credenciales</p>
+            <span class="toggle-link" onclick="toggleAuth()">¿Coach nuevo? Registra tu Equipo</span>
+            <p id="log-error" class="alert-msg" style="color:var(--danger);"></p>
+        </div>
+        
+        <div class="login-box" id="form-register" style="display:none;">
+            <h2 style="margin-bottom:20px;">Registro de Franquicia</h2>
+            <input type="text" id="reg-nombre" placeholder="Tu Nombre (Head Coach)">
+            <input type="text" id="reg-equipo" placeholder="Nombre Oficial del Equipo">
+            <input type="text" id="reg-username" placeholder="Usuario de acceso">
+            <input type="password" id="reg-password" placeholder="Contraseña">
+            <button onclick="registrarCoach()">Crear Equipo</button>
+            <span class="toggle-link" onclick="toggleAuth()">Ya registré mi equipo. Iniciar Sesión</span>
+            <p id="reg-msg" class="alert-msg"></p>
         </div>
     </div>
 
+
+
+
+
+<!-- PANEL PRINCIPAL DEL SISTEMA -->
     <div id="dashboard-view">
-        <!-- Alineación Táctica (Solo Coach) -->
-        <div class="card module-coach" id="card-alineacion">
-            <div class="card-header"><i class="fa-solid fa-chess-board" style="color:var(--primary);"></i> Pizarra Táctica Profesional</div>
+        
+        <div class="column-left">
             
-            <div class="tabs-container" id="tabs-container">
-                <!-- Se llenan por JS -->
+            <!-- PANEL ADMINISTRADOR DE LIGA -->
+            <div id="panel-admin" style="display:none;">
+                
+                <!-- Agendar Partido -->
+                <div class="card" style="border-left: 4px solid #8b5cf6;">
+                    <div class="card-header"><i class="fa-solid fa-crown" style="color:#8b5cf6;"></i> Programar Partido Oficial</div>
+                    <div style="display:flex; gap:10px;">
+                        <div class="form-group" style="flex:1;">
+                            <label>Equipo Local</label>
+                            <select id="admin-eq-local" class="form-control combo-equipos"></select>
+                        </div>
+                        <div class="form-group" style="flex:1;">
+                            <label>Equipo Visitante</label>
+                            <select id="admin-eq-visita" class="form-control combo-equipos"></select>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>Fecha y Hora</label>
+                        <input type="datetime-local" id="admin-fecha" class="form-control">
+                    </div>
+                    <div class="form-group">
+                        <label>Sede (Montemorelos)</label>
+                        <select id="admin-mapa" class="form-control">
+                            <option value="https://maps.app.goo.gl/Armi9rCLYaV3CbnP9?g_st=ac">Ecoparque Pilón</option>
+                            <option value="https://maps.app.goo.gl/xeDZp7hknHCGzfLR9?g_st=ac">Deportivo Oriente</option>
+                            <option value="https://maps.app.goo.gl/rs8umgYnoJajoi16A?g_st=ac">Los Pavorreales</option>
+                        </select>
+                    </div>
+                    <button class="btn-submit" onclick="crearEvento('Partido', 'admin')" style="background:#8b5cf6; color:white;">Agendar Partido</button>
+                    <p id="admin-msg" class="alert-msg"></p>
+                </div>
+                
+                <!-- Registrar Marcadores -->
+                <div class="card" style="border-left: 4px solid var(--warning);">
+                    <div class="card-header"><i class="fa-solid fa-pen-to-square" style="color:var(--warning);"></i> Registrar Marcador Final</div>
+                    <div style="display:flex; gap:10px;">
+                        <div class="form-group" style="flex:1;">
+                            <label>Eq. Local</label>
+                            <select id="res-eq-local" class="form-control combo-equipos"></select>
+                            <input type="number" id="res-pts-local" class="form-control" placeholder="Pts" style="margin-top:5px;">
+                        </div>
+                        <div class="form-group" style="flex:1;">
+                            <label>Eq. Visitante</label>
+                            <select id="res-eq-visita" class="form-control combo-equipos"></select>
+                            <input type="number" id="res-pts-visita" class="form-control" placeholder="Pts" style="margin-top:5px;">
+                        </div>
+                    </div>
+                    <button class="btn-submit" onclick="registrarResultado()" style="background:var(--warning); color:#000;">Actualizar Tabla</button>
+                    <p id="res-msg" class="alert-msg"></p>
+                    <div class="history-list" id="lista-historial"></div>
+                </div>
+
+                <!-- ZONA DE PELIGRO ADMIN -->
+                <div class="card" style="border-left: 4px solid var(--danger);">
+                    <div class="card-header"><i class="fa-solid fa-triangle-exclamation" style="color:var(--danger);"></i> Gestión de Liga (Zona de Peligro)</div>
+                    <p style="font-size:12px; color:var(--text-muted); margin-bottom:10px;">Equipos Inscritos y Coaches:</p>
+                    <div class="history-list" id="admin-lista-equipos" style="margin-bottom: 20px;"></div>
+                    <div style="display:flex; gap:10px;">
+                        <button class="btn-undo" onclick="reiniciarTemporada()" style="flex:1;">Reiniciar Tabla a Cero</button>
+                        <button class="btn-danger" onclick="eliminarTodosEquipos()" style="flex:1;">Finalizar Temporada (Borrar Todos)</button>
+                    </div>
+                </div>
             </div>
 
-            <p style="font-size:13px; color:var(--text-muted); margin-bottom:10px;">Selecciona un jugador arriba y toca una posición. Para quitarlo, solo da clic en él en el campo. Arrastra libremente los círculos.</p>
-            <div class="roster-container" id="roster-list"></div>
-            
-            <div class="field-map" id="field-container">
-                <!-- Los nodos se inyectan por JS dependiendo la pestaña -->
+            <!-- PANEL HEAD COACH -->
+            <div id="panel-coach" style="display:none;">
+                
+                <!-- Programar Entrenamiento -->
+                <div class="card" style="border-left: 4px solid var(--training);">
+                    <div class="card-header"><i class="fa-solid fa-stopwatch" style="color:var(--training);"></i> Programar Entrenamiento</div>
+                    <div class="form-group">
+                        <label>Tema</label>
+                        <input type="text" id="coach-tema" class="form-control" placeholder="Ej. Táctico">
+                    </div>
+                    <div class="form-group">
+                        <label>Fecha y Hora</label>
+                        <input type="datetime-local" id="coach-fecha" class="form-control">
+                    </div>
+                    <div class="form-group">
+                        <label>Sede</label>
+                        <select id="coach-mapa" class="form-control">
+                            <option value="https://maps.app.goo.gl/Armi9rCLYaV3CbnP9?g_st=ac">Ecoparque Pilón</option>
+                            <option value="https://maps.app.goo.gl/xeDZp7hknHCGzfLR9?g_st=ac">Deportivo Oriente</option>
+                            <option value="https://maps.app.goo.gl/rs8umgYnoJajoi16A?g_st=ac">Los Pavorreales</option>
+                        </select>
+                    </div>
+                    <button class="btn-submit" onclick="crearEvento('Entrenamiento', 'coach')" style="background:var(--training); color:white;">Agendar Entrenamiento</button>
+                    <p id="coach-msg" class="alert-msg"></p>
+                </div>
+                
+                <!-- Pizarra Táctica y Roster CRUD -->
+                <div class="card">
+                    <div class="card-header"><i class="fa-solid fa-chess-board" style="color:var(--primary);"></i> Pizarra Táctica y Roster</div>
+                    <div class="tabs-container" id="tabs-container"></div>
+                    
+                    <div style="display:flex; gap:10px; margin-bottom:15px;">
+                        <input type="text" id="add-jug-nombre" class="form-control" placeholder="Nombre Atleta">
+                        <input type="text" id="add-jug-user" class="form-control" placeholder="Usuario">
+                        <input type="password" id="add-jug-pass" class="form-control" placeholder="Clave">
+                        <button class="btn-submit" onclick="agregarAtletaCoach()" style="width:auto;"><i class="fa-solid fa-plus"></i></button>
+                    </div>
+
+                    <div class="roster-container" id="roster-list"></div>
+                    <div class="field-map" id="field-container"></div>
+                </div>
+            </div>
+
+            <!-- PANEL ATLETA -->
+            <div class="card" id="panel-atleta" style="display:none; border-left: 4px solid var(--accent);">
+                <div class="card-header"><i class="fa-solid fa-heart-pulse" style="color:var(--accent);"></i> Estado Físico Diario</div>
+                <select id="fatiga" class="form-control" style="margin-bottom:10px;">
+                    <option value="1">Nivel 1: Al 100%</option>
+                    <option value="2">Nivel 2: Cansancio general</option>
+                    <option value="3">Nivel 3: Molestia muscular leve</option>
+                    <option value="4">Nivel 4: Dolor agudo (Riesgo)</option>
+                    <option value="5">Nivel 5: LESIÓN</option>
+                </select>
             </div>
         </div>
 
-        <!-- Control Físico (Solo Atleta) -->
-        <div class="card module-atleta" id="card-salud">
-            <div class="card-header"><i class="fa-solid fa-heart-pulse" style="color:var(--accent);"></i> Estado Físico de Hoy</div>
-            <select id="fatiga" style="width:100%; padding:12px; background:var(--bg-panel); color:white; border:1px solid #334155; border-radius:8px;">
-                <option value="1">Nivel 1: Al 100%, sin molestias</option>
-                <option value="2">Nivel 2: Cansancio general</option>
-                <option value="3">Nivel 3: Molestia muscular leve</option>
-                <option value="4">Nivel 4: Dolor agudo (Riesgo)</option>
-                <option value="5">Nivel 5: LESIÓN (No puedo jugar)</option>
-            </select>
-        </div>
+        <div class="column-right">
+            
+            <!-- TABLA DE POSICIONES -->
+            <div class="card">
+                <div class="card-header"><i class="fa-solid fa-trophy" style="color:var(--warning);"></i> Tabla de Posiciones</div>
+                <div style="overflow-x: auto;">
+                    <table class="standings-table">
+                        <thead>
+                            <tr>
+                                <th>EQUIPO</th>
+                                <th>JJ</th>
+                                <th>JG</th>
+                                <th>JP</th>
+                                <th>PF</th>
+                                <th>PC</th>
+                                <th>DIF</th>
+                                <th>PT</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tabla-posiciones"></tbody>
+                    </table>
+                </div>
+            </div>
 
-        <!-- Calendario (Todos) -->
-        <div class="card" id="card-eventos" style="display:block;">
-            <div class="card-header"><i class="fa-regular fa-calendar-days" style="color:var(--warning);"></i> Calendario de Liga</div>
-            <div class="event-list" id="calendario-lista">Cargando...</div>
+            <!-- PREDICCIONES (GRÁFICAS) -->
+            <div class="card">
+                <div class="card-header"><i class="fa-solid fa-chart-line" style="color:var(--accent);"></i> Probabilidad de Campeonato</div>
+                <p style="font-size:12px; color:var(--text-muted); margin-bottom:15px;">Cálculo algorítmico basado en Win Rate y Diferencia de Puntos.</p>
+                <div id="contenedor-predicciones"></div>
+            </div>
+
+            <!-- CALENDARIO -->
+            <div class="card">
+                <div class="card-header"><i class="fa-regular fa-calendar-days" style="color:var(--training);"></i> Calendario Oficial</div>
+                <div class="event-list" id="calendario-lista"></div>
+            </div>
+            
         </div>
     </div>
 </div>
 
 <script>
-    let activeRole = '';
-    let selectedPlayer = null;
-    let fullRoster = [];
-
-    // Estado de las Pestañas (Playbooks)
-    let playbooks = [
-        generateDefaultPlaybook("Jugada Ofensiva 1")
+    /* ==============================================
+       VARIABLES GLOBALES Y CONFIGURACIÓN
+    ============================================== */
+    let activeRole = ''; 
+    let selectedPlayer = null; 
+    let fullRoster = []; 
+    let equiposLiga = [];
+    
+    // Playbooks inicializados
+    let playbooks = [ 
+        { 
+            name: "Jugada Base", 
+            nodes: [ 
+                { id: 'p1', defaultName: 'QB', playerName: null, left: '45%', top: '85%' }, 
+                { id: 'p2', defaultName: 'C', playerName: null, left: '45%', top: '60%' }, 
+                { id: 'p3', defaultName: 'WR1', playerName: null, left: '10%', top: '45%' },
+                { id: 'p4', defaultName: 'WR2', playerName: null, left: '80%', top: '45%' },
+                { id: 'p5', defaultName: 'RB', playerName: null, left: '25%', top: '85%' }
+            ] 
+        } 
     ];
     let currentTabIndex = 0;
 
-    function generateDefaultPlaybook(name) {
-        return {
-            name: name,
-            nodes: [
-                { id: 'pos1', defaultName: 'QB', playerName: null, left: '45%', top: '75%' },
-                { id: 'pos2', defaultName: 'C', playerName: null, left: '45%', top: '50%' },
-                { id: 'pos3', defaultName: 'WR1', playerName: null, left: '10%', top: '50%' },
-                { id: 'pos4', defaultName: 'WR2', playerName: null, left: '80%', top: '50%' },
-                { id: 'pos5', defaultName: 'RB', playerName: null, left: '30%', top: '75%' }
-            ]
-        };
-    }
-
+    /* ==============================================
+       FUNCIONES DE RED Y AUTENTICACIÓN
+    ============================================== */
     async function apiRequest(endpoint, method = 'GET', body = null) {
         const headers = { 'Content-Type': 'application/json' };
         const token = localStorage.getItem('playtracker_token');
-        if (token) headers['Authorization'] = 'Bearer ' + token;
-        const options = { method, headers };
-        if (body) options.body = JSON.stringify(body);
-        const res = await fetch(endpoint, options);
+        
+        if (token) {
+            headers['Authorization'] = 'Bearer ' + token;
+        }
+        
+        const res = await fetch(endpoint, { 
+            method, 
+            headers, 
+            body: body ? JSON.stringify(body) : null 
+        });
+        
         if (!res.ok) throw await res.json();
         return res.json();
     }
 
+    function toggleAuth() {
+        const login = document.getElementById('form-login'); 
+        const reg = document.getElementById('form-register');
+        
+        if (login.style.display === 'none') {
+            login.style.display = 'block';
+            reg.style.display = 'none';
+        } else {
+            login.style.display = 'none';
+            reg.style.display = 'block';
+        }
+    }
+
+    async function registrarCoach() {
+        const nombre = document.getElementById('reg-nombre').value;
+        const username = document.getElementById('reg-username').value;
+        const password = document.getElementById('reg-password').value;
+        const nombreEquipo = document.getElementById('reg-equipo').value;
+        const msg = document.getElementById('reg-msg');
+        
+        try {
+            await apiRequest('/api/registrar-coach', 'POST', { username, password, nombre, nombreEquipo });
+            msg.innerText = "¡Equipo creado! Ya puedes iniciar sesión.";
+            msg.style.color = "var(--accent)"; 
+            msg.style.display = "block";
+            setTimeout(() => toggleAuth(), 2000);
+        } catch (e) {
+            msg.innerText = "Error: Usuario o Equipo ya existen.";
+            msg.style.color = "var(--danger)"; 
+            msg.style.display = "block";
+        }
+    }
+
     async function iniciarSesion() {
         try {
-            const data = await apiRequest('/api/login', 'POST', {
-                username: document.getElementById('username').value,
-                password: document.getElementById('password').value
+            const data = await apiRequest('/api/login', 'POST', { 
+                username: document.getElementById('log-username').value, 
+                password: document.getElementById('log-password').value 
             });
-            localStorage.setItem('playtracker_token', data.token);
-            localStorage.setItem('playtracker_role', data.role);
+            
+            localStorage.setItem('playtracker_token', data.token); 
+            localStorage.setItem('playtracker_role', data.role); 
             localStorage.setItem('playtracker_name', data.nombre);
+            
             configurarDashboard();
-        } catch (error) {
-            document.getElementById('login-error').style.display = 'block';
+        } catch (e) { 
+            const err = document.getElementById('log-error');
+            err.innerText = 'Credenciales inválidas'; 
+            err.style.display = 'block'; 
         }
     }
 
     function configurarDashboard() {
-        const token = localStorage.getItem('playtracker_token');
+        const token = localStorage.getItem('playtracker_token'); 
         if (!token) return;
-
+        
         activeRole = localStorage.getItem('playtracker_role');
-        document.getElementById('login-view').style.display = 'none';
-        document.getElementById('dashboard-view').style.display = 'grid';
+        
+        document.getElementById('login-view').style.display = 'none'; 
+        document.getElementById('dashboard-view').style.display = 'grid'; 
         document.getElementById('user-controls').style.display = 'flex';
         document.getElementById('user-name').innerText = localStorage.getItem('playtracker_name') + ' (' + activeRole + ')';
 
-        if (activeRole === 'Head Coach') {
-            document.getElementById('card-alineacion').style.display = 'block';
-            document.getElementById('card-salud').style.display = 'none';
-            cargarRoster();
-        } else {
-            document.getElementById('card-alineacion').style.display = 'none';
-            document.getElementById('card-salud').style.display = 'block';
+        // Ocultamos todos los paneles primero
+        document.getElementById('panel-admin').style.display = 'none'; 
+        document.getElementById('panel-coach').style.display = 'none'; 
+        document.getElementById('panel-atleta').style.display = 'none';
+
+        // Mostramos el panel según el rol
+        if (activeRole === 'Admin') { 
+            document.getElementById('panel-admin').style.display = 'block'; 
+            cargarHistorial(); 
+            cargarListaEquiposAdmin(); 
         }
+        else if (activeRole === 'Head Coach') { 
+            document.getElementById('panel-coach').style.display = 'block'; 
+            fetchRoster(); 
+        }
+        else { 
+            document.getElementById('panel-atleta').style.display = 'block'; 
+        }
+        
+        // Cargamos los datos compartidos
+        cargarPosiciones(); 
         cargarEventos();
+        cargarPredicciones();
+    }
+
+    /* ==============================================
+       INTELIGENCIA DE NEGOCIO (PREDICCIONES)
+    ============================================== */
+    async function cargarPredicciones() {
+        try {
+            const preds = await apiRequest('/api/predicciones');
+            const cont = document.getElementById('contenedor-predicciones');
+            cont.innerHTML = '';
+            
+            preds.forEach(p => {
+                cont.innerHTML += `
+                    <div class="pred-item">
+                        <div class="pred-header">
+                            <span>${p.equipo}</span>
+                            <span>${p.probabilidad}%</span>
+                        </div>
+                        <div class="pred-bar-bg">
+                            <div class="pred-bar-fill" style="width: ${p.probabilidad}%;"></div>
+                        </div>
+                    </div>`;
+            });
+        } catch(e) { 
+            console.error("Error al cargar predicciones"); 
+        }
+    }
+
+    /* ==============================================
+       POSICIONES Y RESULTADOS
+    ============================================== */
+    async function cargarPosiciones() {
+        try {
+            const posiciones = await apiRequest('/api/posiciones');
+            equiposLiga = posiciones.map(p => p.equipo);
+            const tbody = document.getElementById('tabla-posiciones'); 
+            tbody.innerHTML = '';
+            
+            posiciones.forEach(eq => {
+                const difVisual = eq.dif > 0 ? '+' + eq.dif : eq.dif;
+                tbody.innerHTML += `
+                    <tr>
+                        <td class="col-equipo">${eq.equipo}</td>
+                        <td>${eq.jj}</td>
+                        <td>${eq.jg}</td>
+                        <td>${eq.jp}</td>
+                        <td>${eq.pf}</td>
+                        <td>${eq.pc}</td>
+                        <td>${difVisual}</td>
+                        <td style="font-weight:bold; color:var(--accent);">${eq.pt}</td>
+                    </tr>`;
+            });
+            
+            if(activeRole === 'Admin') {
+                document.querySelectorAll('.combo-equipos').forEach(c => {
+                    c.innerHTML = ''; 
+                    equiposLiga.forEach(eq => c.innerHTML += `<option value="${eq}">${eq}</option>`);
+                });
+            }
+        } catch(e) {
+            console.error("Error al cargar las posiciones");
+        }
+    }
+
+    async function cargarHistorial() {
+        try {
+            const historial = await apiRequest('/api/resultados');
+            const lista = document.getElementById('lista-historial'); 
+            lista.innerHTML = '';
+            
+            if(historial.length === 0) { 
+                lista.innerHTML = '<p style="font-size:13px; color:var(--text-muted);">Sin resultados recientes.</p>'; 
+                return; 
+            }
+            
+            historial.forEach(h => {
+                lista.innerHTML += `
+                    <div class="history-item">
+                        <div>
+                            <strong style="color:var(--warning);">${h.eq_local} ${h.pts_local}</strong> 
+                            - 
+                            <strong>${h.pts_visita} ${h.eq_visita}</strong>
+                        </div>
+                        <button class="btn-undo" onclick="revertirResultado(${h.id})">
+                            <i class="fa-solid fa-rotate-left"></i> Deshacer
+                        </button>
+                    </div>`;
+            });
+        } catch(e) {
+            console.error("Error al cargar el historial");
+        }
+    }
+
+    async function registrarResultado() {
+        const eqLocal = document.getElementById('res-eq-local').value; 
+        const eqVisita = document.getElementById('res-eq-visita').value;
+        const ptsLocal = parseInt(document.getElementById('res-pts-local').value); 
+        const ptsVisita = parseInt(document.getElementById('res-pts-visita').value);
+        
+        if(eqLocal === eqVisita) {
+            return alert("Un equipo no puede jugar contra sí mismo.");
+        }
+        
+        try {
+            await apiRequest('/api/resultados', 'POST', { eqLocal, ptsLocal, eqVisita, ptsVisita });
+            document.getElementById('res-pts-local').value = ''; 
+            document.getElementById('res-pts-visita').value = '';
+            
+            cargarPosiciones(); 
+            cargarHistorial(); 
+            cargarPredicciones();
+        } catch(e) { 
+            alert("Error al guardar el resultado."); 
+        }
+    }
+
+    async function revertirResultado(id) {
+        if(confirm("¿Deshacer este partido y restar puntos a ambos equipos?")) {
+            try { 
+                await apiRequest(`/api/resultados/${id}`, 'DELETE'); 
+                cargarPosiciones(); 
+                cargarHistorial(); 
+                cargarPredicciones();
+            } catch(e) { 
+                alert("Error al revertir el resultado."); 
+            }
+        }
+    }
+
+    /* ==============================================
+       ZONA DE PELIGRO ADMIN
+    ============================================== */
+    async function cargarListaEquiposAdmin() {
+        try {
+            const equipos = await apiRequest('/api/admin/equipos');
+            const lista = document.getElementById('admin-lista-equipos'); 
+            lista.innerHTML = '';
+            
+            equipos.forEach(eq => {
+                lista.innerHTML += `
+                    <div class="history-item">
+                        <div>
+                            <strong style="color:var(--primary);">${eq.equipo}</strong> <br>
+                            <span style="font-size:12px; color:var(--text-muted);">Coach: ${eq.coach}</span>
+                        </div>
+                        <button class="btn-undo" onclick="eliminarEquipoIndividual(${eq.id}, '${eq.equipo}')">
+                            <i class="fa-solid fa-trash"></i> Expulsar
+                        </button>
+                    </div>`;
+            });
+        } catch(e) {
+            console.error("Error al cargar la lista de equipos");
+        }
+    }
+
+    async function eliminarEquipoIndividual(id, nombre) {
+        if(confirm(`⚠️ ALERTA: ¿Expulsar al equipo ${nombre}? Se borrarán sus jugadores, partidos y puntos en cascada.`)) {
+            try { 
+                await apiRequest(`/api/admin/equipo/${id}`, 'DELETE'); 
+                alert("Equipo eliminado exitosamente."); 
+                configurarDashboard(); 
+            } catch(e) {
+                alert("Error al eliminar el equipo.");
+            }
+        }
+    }
+
+    async function reiniciarTemporada() {
+        if(confirm("⚠️ ALERTA: ¿Reiniciar la tabla de posiciones a CERO? Los equipos y jugadores se mantendrán en el sistema.")) {
+            try { 
+                await apiRequest('/api/admin/reset-posiciones', 'PUT'); 
+                alert("Temporada reiniciada a cero puntos."); 
+                configurarDashboard(); 
+            } catch(e) {
+                alert("Error al reiniciar las posiciones.");
+            }
+        }
+    }
+
+    async function eliminarTodosEquipos() {
+        if(confirm("🚨 ALERTA ROJA: Estás a punto de borrar TODOS los equipos y jugadores para cerrar la temporada. ¿Estás absolutamente seguro?")) {
+            try { 
+                await apiRequest('/api/admin/equipos-todos', 'DELETE'); 
+                alert("Sistema limpiado. Listo para una nueva temporada."); 
+                configurarDashboard(); 
+            } catch(e) {
+                alert("Error crítico al limpiar el sistema.");
+            }
+        }
+    }
+
+    /* ==============================================
+       EVENTOS Y CALENDARIO
+    ============================================== */
+    async function crearEvento(tipo, panelPrefix) {
+        const isCoach = tipo === 'Entrenamiento';
+        const msgBox = document.getElementById(`${panelPrefix}-msg`);
+        
+        const eqLoc = isCoach ? null : document.getElementById(`${panelPrefix}-eq-local`).value;
+        const rival = isCoach ? document.getElementById(`${panelPrefix}-tema`).value : document.getElementById(`${panelPrefix}-eq-visita`).value;
+        
+        if(!rival || !document.getElementById(`${panelPrefix}-fecha`).value) {
+            return alert("Faltan datos por rellenar.");
+        }
+        
+        const f = new Date(document.getElementById(`${panelPrefix}-fecha`).value);
+        const fechaFormat = f.toLocaleDateString('es-ES', { day: '2-digit', month: 'short', hour: '2-digit', minute: '2-digit' }).replace(',', ' -');
+        const selMap = document.getElementById(`${panelPrefix}-mapa`);
+
+        try {
+            await apiRequest('/api/eventos', 'POST', { 
+                equipo_local_nombre: eqLoc, 
+                rival: rival, 
+                tipo: tipo, 
+                fecha: fechaFormat, 
+                lugar: selMap.options[selMap.selectedIndex].text, 
+                linkMapa: selMap.value 
+            });
+            msgBox.innerText = `¡${tipo} agendado exitosamente!`; 
+            msgBox.style.color = "var(--accent)"; 
+            msgBox.style.display = "block";
+            cargarEventos();
+        } catch (e) { 
+            msgBox.innerText = e.error || "Error al agendar evento."; 
+            msgBox.style.color = "var(--danger)"; 
+            msgBox.style.display = "block"; 
+        }
     }
 
     async function cargarEventos() {
         try {
             const eventos = await apiRequest('/api/eventos');
-            const contenedor = document.getElementById('calendario-lista');
+            const contenedor = document.getElementById('calendario-lista'); 
             contenedor.innerHTML = '';
+            
             eventos.forEach(ev => {
-                const isPartido = ev.tipo === 'Partido';
-                const colorClass = isPartido ? 'type-partido' : 'type-entrenamiento';
-                const titulo = isPartido ? `${ev.equipoLocal} vs ${ev.rival}` : ev.rival;
-                const iconoMapa = `<a href="https://www.google.com/maps/search/?api=1&query=${ev.linkMapa}" target="_blank" class="maps-link"><i class="fa-solid fa-map-location-dot"></i> Ir al Mapa</a>`;
-
-                let accionesHTML = '';
+                let acts = '';
                 if (activeRole === 'Jugador') {
-                    accionesHTML = `
-                        <div class="attendance-actions" id="acciones-${ev.id}">
-                            <button class="btn-asisto" onclick="enviarAsistencia(${ev.id}, true)">✅ Asisto</button>
-                            <button class="btn-no-asisto" onclick="enviarAsistencia(${ev.id}, false)">❌ Faltaré</button>
-                        </div>`;
+                    acts = `
+                    <div class="attendance-actions">
+                        <button class="btn-asisto" onclick="enviarAsistencia(${ev.id}, true)">✅ Asisto</button>
+                        <button class="btn-no-asisto" onclick="enviarAsistencia(${ev.id}, false)">❌ Faltaré</button>
+                    </div>`;
                 } else if (activeRole === 'Head Coach') {
-                    accionesHTML = `
-                        <div class="coach-stats">
-                            <span><i class="fa-solid fa-user-check"></i> Confirmados: <span class="stat-green">${ev.stats.asisten}</span></span>
-                            <span><i class="fa-solid fa-user-xmark"></i> Ausentes: <span class="stat-red">${ev.stats.faltan}</span></span>
-                        </div>`;
+                    acts = `
+                    <div class="coach-stats">
+                        <span>Confirmados: <span class="stat-green">${ev.stats.asisten}</span></span>
+                        <span>Ausentes: <span class="stat-red">${ev.stats.faltan}</span></span>
+                    </div>`;
+                    
+                    // Permitir al coach editar sus entrenamientos
+                    if(ev.tipo === 'Entrenamiento') {
+                        acts += `
+                        <button class="btn-undo" style="border-color:var(--warning); color:var(--warning); margin-top:10px; width:100%;" onclick="editarEventoCoach(${ev.id})">
+                            <i class="fa-solid fa-pen"></i> Editar Info
+                        </button>`;
+                    }
+                } else if (activeRole === 'Admin') {
+                    acts = `
+                    <div class="coach-stats">
+                        <span>Confirmados: <span class="stat-green">${ev.stats.asisten}</span></span>
+                        <span>Ausentes: <span class="stat-red">${ev.stats.faltan}</span></span>
+                    </div>`;
                 }
-
+                
                 contenedor.innerHTML += `
                     <div class="event-item">
-                        <div class="event-type-bar ${colorClass}"></div>
-                        <div class="event-title">${titulo} <span style="font-size:12px; font-weight:normal; color:#cbd5e1; background:rgba(255,255,255,0.1); padding:2px 6px; border-radius:4px; margin-left:5px;">${ev.tipo}</span></div>
+                        <div class="event-type-bar ${ev.tipo === 'Partido' ? 'type-partido' : 'type-entrenamiento'}"></div>
+                        <div class="event-title">${ev.tipo === 'Partido' ? ev.equipoLocal+' vs '+ev.rival : ev.rival} <span style="font-size:12px; color:#cbd5e1; background:rgba(255,255,255,0.1); padding:2px; border-radius:4px;">${ev.tipo}</span></div>
                         <div class="event-details">
                             <span><i class="fa-regular fa-clock"></i> ${ev.fecha}</span>
-                            <span><i class="fa-solid fa-location-dot"></i> ${ev.lugar} &nbsp; ${iconoMapa}</span>
+                            <span><i class="fa-solid fa-location-dot"></i> ${ev.lugar} <a href="${ev.linkMapa}" target="_blank" class="maps-link">Ver Mapa</a></span>
                         </div>
-                        ${accionesHTML}
+                        ${acts}
                     </div>`;
             });
-        } catch(e) { console.error(e); }
+        } catch(e) {
+            console.error("Error al cargar eventos");
+        }
+    }
+
+    async function editarEventoCoach(id) {
+        const nFecha = prompt("Ingresa la nueva Fecha y Hora (Ej. 28 Sep - 18:00):");
+        if(!nFecha) return;
+        
+        const nLugar = prompt("Ingresa el nuevo Lugar (Ej. Ecoparque Pilón):");
+        if(!nLugar) return;
+        
+        try {
+            await apiRequest(`/api/eventos/${id}`, 'PUT', { 
+                fecha: nFecha, 
+                lugar: nLugar, 
+                linkMapa: "https://maps.app.goo.gl/Armi9rCLYaV3CbnP9?g_st=ac" 
+            });
+            cargarEventos();
+        } catch(e) { 
+            alert("Error al editar el evento."); 
+        }
     }
 
     async function enviarAsistencia(eventoId, asiste) {
-        const fatiga = document.getElementById('fatiga').value;
-        try {
-            await apiRequest('/api/asistencia', 'POST', { evento_id: eventoId, asiste, fatiga });
-            document.getElementById(`acciones-${eventoId}`).innerHTML = `<span style="color:var(--accent); font-weight:bold;">¡Respuesta guardada!</span>`;
-        } catch(e) { alert('Error al guardar'); }
-    }
-
-    /* --- SISTEMA DE TABS Y ALINEACIÓN (HEAD COACH) --- */
-
-    async function cargarRoster() {
-        if(fullRoster.length === 0) {
-            fullRoster = await apiRequest('/api/roster');
+        try { 
+            await apiRequest('/api/asistencia', 'POST', { 
+                evento_id: eventoId, 
+                asiste: asiste, 
+                fatiga: document.getElementById('fatiga').value 
+            });
+            alert('¡Tu respuesta ha sido enviada al Coach!'); 
+            cargarEventos(); 
+        } catch(e) {
+            alert("Error al registrar asistencia");
         }
-        renderPlaybookInterface();
     }
 
-    function renderPlaybookInterface() {
-        renderTabs();
-        renderRosterUI();
-        renderFieldNodes();
+    /* ==============================================
+       ROSTER Y PIZARRA TÁCTICA
+    ============================================== */
+    async function agregarAtletaCoach() {
+        const nombre = document.getElementById('add-jug-nombre').value;
+        const username = document.getElementById('add-jug-user').value;
+        const password = document.getElementById('add-jug-pass').value;
+        
+        if(!nombre || !username || !password) {
+            return alert("Por favor, llena todos los campos para agregar al jugador.");
+        }
+        
+        try {
+            await apiRequest('/api/jugador', 'POST', { nombre, username, password });
+            
+            document.getElementById('add-jug-nombre').value = ''; 
+            document.getElementById('add-jug-user').value = ''; 
+            document.getElementById('add-jug-pass').value = '';
+            
+            fetchRoster();
+        } catch(e) { 
+            alert("El usuario ya existe en el sistema."); 
+        }
     }
 
     function renderTabs() {
-        const container = document.getElementById('tabs-container');
-        container.innerHTML = '';
-        playbooks.forEach((pb, index) => {
-            const isActive = index === currentTabIndex ? 'active' : '';
-            container.innerHTML += `<div class="play-tab ${isActive}" onclick="switchTab(${index})" ondblclick="renameTab(${index})" title="Doble clic para renombrar">${pb.name}</div>`;
-        });
-        if (playbooks.length < 5) {
-            container.innerHTML += `<div class="play-tab-add" onclick="addTab()">+ Nueva Jugada</div>`;
-        }
-    }
-
-    function switchTab(index) {
-        saveCurrentNodePositions();
-        currentTabIndex = index;
-        selectedPlayer = null;
-        renderPlaybookInterface();
-    }
-
-    function addTab() {
-        if(playbooks.length >= 5) return;
-        saveCurrentNodePositions();
-        playbooks.push(generateDefaultPlaybook(`Jugada ${playbooks.length + 1}`));
-        currentTabIndex = playbooks.length - 1;
-        renderPlaybookInterface();
-    }
-
-    function renameTab(index) {
-        const newName = prompt("Nombre de la jugada (Ej. Ofensiva Blitz):", playbooks[index].name);
-        if (newName && newName.trim() !== "") {
-            playbooks[index].name = newName.trim();
-            renderTabs();
-        }
-    }
-
-    function renderRosterUI() {
-        const container = document.getElementById('roster-list');
-        container.innerHTML = '';
+        const c = document.getElementById('tabs-container'); 
+        c.innerHTML = '';
         
-        // Determinar qué jugadores ya están asignados en la pestaña actual
-        const assignedPlayers = playbooks[currentTabIndex].nodes.map(n => n.playerName).filter(name => name !== null);
+        playbooks.forEach((pb, i) => {
+            const activeClass = i === currentTabIndex ? 'active' : '';
+            c.innerHTML += `
+                <div class="play-tab ${activeClass}" onclick="switchTab(${i})">
+                    ${pb.name}
+                    <i class="fa-solid fa-pen action-icon" style="margin-left:8px;" onclick="event.stopPropagation(); renameTab(${i})" title="Editar Nombre"></i>
+                    ${playbooks.length > 1 ? `<i class="fa-solid fa-xmark action-icon" style="margin-left:5px; color:var(--danger);" onclick="event.stopPropagation(); deleteTab(${i})" title="Eliminar Jugada"></i>` : ''}
+                </div>`;
+        });
+        
+        if (playbooks.length < 5) {
+            c.innerHTML += `<div class="play-tab-add" onclick="addTab()">+ Nueva Jugada</div>`;
+        }
+    }
 
-        fullRoster.forEach(jugador => {
-            // Solo renderizar si NO está asignado en el campo
-            if (!assignedPlayers.includes(jugador.nombre)) {
-                const isSelected = selectedPlayer === jugador.nombre ? 'selected' : '';
-                container.innerHTML += `<div class="player-chip ${isSelected}" onclick="seleccionarJugador('${jugador.nombre}')">${jugador.nombre}</div>`;
+    function switchTab(i) { 
+        currentTabIndex = i; 
+        selectedPlayer = null; 
+        renderPlaybookInterface(); 
+    }
+    
+    function addTab() { 
+        if(playbooks.length >= 5) return; 
+        playbooks.push({ 
+            name: `Jugada ${playbooks.length + 1}`, 
+            nodes: JSON.parse(JSON.stringify(playbooks[0].nodes)) 
+        }); 
+        currentTabIndex = playbooks.length - 1; 
+        renderPlaybookInterface(); 
+    }
+    
+    function renameTab(i) { 
+        const n = prompt("Nuevo nombre de la jugada:", playbooks[i].name); 
+        if (n && n.trim() !== "") { 
+            playbooks[i].name = n.trim(); 
+            renderTabs(); 
+        } 
+    }
+    
+    function deleteTab(i) { 
+        if(confirm("¿Eliminar esta jugada táctica?")) { 
+            playbooks.splice(i, 1); 
+            currentTabIndex = 0; 
+            renderPlaybookInterface(); 
+        } 
+    }
+
+    async function fetchRoster() { 
+        try { 
+            fullRoster = await apiRequest('/api/roster'); 
+            renderPlaybookInterface(); 
+        } catch(e) {
+            console.error("Error al obtener el roster");
+        } 
+    }
+    
+    function renderPlaybookInterface() { 
+        renderTabs(); 
+        renderRosterUI(); 
+        renderFieldNodes(); 
+    }
+    
+    function renderRosterUI() {
+        const c = document.getElementById('roster-list'); 
+        c.innerHTML = '';
+        const assigned = playbooks[currentTabIndex].nodes.map(n => n.playerName).filter(n => n);
+        
+        fullRoster.forEach(j => {
+            if (!assigned.includes(j.nombre)) {
+                c.innerHTML += `
+                    <div class="player-chip ${selectedPlayer === j.nombre ? 'selected' : ''}">
+                        <span class="player-name" onclick="seleccionarJugador('${j.nombre}')">${j.nombre}</span>
+                        <i class="fa-solid fa-pen action-icon" style="margin-left:8px;" onclick="actualizarJugador(${j.id}, '${j.nombre}')"></i>
+                        <i class="fa-solid fa-trash action-icon" style="margin-left:5px;" onclick="eliminarJugador(${j.id})"></i>
+                    </div>`;
             }
         });
     }
 
-    function seleccionarJugador(nombre) {
-        selectedPlayer = selectedPlayer === nombre ? null : nombre; // Toggle
-        renderRosterUI();
+    async function actualizarJugador(id, n) { 
+        const nvo = prompt("Actualizar Nombre del Atleta:", n); 
+        if (nvo && nvo !== n) { 
+            await apiRequest(`/api/jugador/${id}`, 'PUT', { nombre: nvo }); 
+            fetchRoster(); 
+        } 
+    }
+    
+    async function eliminarJugador(id) { 
+        if (confirm("¿Estás seguro de ELIMINAR a este jugador de la base de datos?")) { 
+            await apiRequest(`/api/jugador/${id}`, 'DELETE'); 
+            fetchRoster(); 
+        } 
+    }
+    
+    function seleccionarJugador(n) { 
+        selectedPlayer = selectedPlayer === n ? null : n; 
+        renderRosterUI(); 
     }
 
     function renderFieldNodes() {
-        const field = document.getElementById('field-container');
+        const field = document.getElementById('field-container'); 
         field.innerHTML = '';
         
-        playbooks[currentTabIndex].nodes.forEach((nodeData, index) => {
-            const isAssigned = nodeData.playerName !== null;
-            const nodeClass = isAssigned ? 'position-node assigned' : 'position-node';
-            const displayText = isAssigned ? nodeData.playerName : nodeData.defaultName;
-
-            const el = document.createElement('div');
-            el.className = nodeClass;
-            el.style.left = nodeData.left;
-            el.style.top = nodeData.top;
-            el.innerText = displayText;
+        playbooks[currentTabIndex].nodes.forEach((nData) => {
+            const el = document.createElement('div'); 
+            el.className = nData.playerName ? 'position-node assigned' : 'position-node';
+            el.style.left = nData.left; 
+            el.style.top = nData.top; 
+            el.innerText = nData.playerName || nData.defaultName;
             
-            // Evento para Asignar / Desasignar (Click)
-            el.addEventListener('click', (e) => {
-                if (window.isDraggingNode) return; // Evitar clic si se estaba arrastrando
-
-                if (nodeData.playerName) {
-                    // DESASIGNAR: Regresar al roster
-                    nodeData.playerName = null;
-                    selectedPlayer = null;
-                    renderPlaybookInterface();
-                } else if (selectedPlayer) {
-                    // ASIGNAR: Poner jugador seleccionado
-                    nodeData.playerName = selectedPlayer;
-                    selectedPlayer = null;
-                    renderPlaybookInterface();
+            el.addEventListener('click', () => {
+                if (window.isDraggingNode) return;
+                
+                if (nData.playerName) { 
+                    nData.playerName = null; 
+                    selectedPlayer = null; 
+                    renderPlaybookInterface(); 
+                } 
+                else if (selectedPlayer) { 
+                    nData.playerName = selectedPlayer; 
+                    selectedPlayer = null; 
+                    renderPlaybookInterface(); 
                 }
             });
-
-            // Hacerlo arrastrable
-            makeDraggable(el, nodeData);
+            
+            makeDraggable(el, nData); 
             field.appendChild(el);
         });
     }
 
-    function saveCurrentNodePositions() {
-        // Las posiciones se guardan en tiempo real en la función makeDraggable
-    }
-
-    // Lógica Drag & Drop Libre
-    function makeDraggable(elmnt, nodeDataRef) {
-        let pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0;
-        let isDragThresholdMet = false;
-
-        elmnt.onmousedown = dragMouseDown;
-        elmnt.ontouchstart = dragMouseDown; // Soporte móvil
-
-        function dragMouseDown(e) {
-            e.preventDefault();
-            window.isDraggingNode = false;
-            isDragThresholdMet = false;
-
-            const ev = e.type === 'touchstart' ? e.touches[0] : e;
-            pos3 = ev.clientX;
-            pos4 = ev.clientY;
+    // Drag & Drop (Mouse y Táctil para Móviles)
+    function makeDraggable(el, ref) {
+        let p1=0, p2=0, p3=0, p4=0; 
+        let dragging = false;
+        
+        el.onmousedown = startDrag; 
+        el.ontouchstart = startDrag;
+        
+        function startDrag(e) { 
+            e.preventDefault(); 
+            window.isDraggingNode = false; 
+            dragging = false; 
             
-            document.onmouseup = closeDragElement;
-            document.ontouchend = closeDragElement;
-            document.onmousemove = elementDrag;
-            document.ontouchmove = elementDrag;
+            const ev = e.type === 'touchstart' ? e.touches[0] : e; 
+            p3 = ev.clientX; 
+            p4 = ev.clientY; 
+            
+            document.onmouseup = closeDrag; 
+            document.ontouchend = closeDrag; 
+            document.onmousemove = dragMove; 
+            document.ontouchmove = dragMove; 
         }
-
-        function elementDrag(e) {
+        
+        function dragMove(e) {
             const ev = e.type === 'touchmove' ? e.touches[0] : e;
             
-            // Detectar si el movimiento es suficiente para considerarse "arrastre" y no un click
-            if (Math.abs(pos3 - ev.clientX) > 3 || Math.abs(pos4 - ev.clientY) > 3) {
-                isDragThresholdMet = true;
+            if (Math.abs(p3 - ev.clientX) > 3 || Math.abs(p4 - ev.clientY) > 3) { 
+                dragging = true; 
                 window.isDraggingNode = true; 
             }
-
-            if (!isDragThresholdMet) return;
-
-            e.preventDefault();
-            pos1 = pos3 - ev.clientX;
-            pos2 = pos4 - ev.clientY;
-            pos3 = ev.clientX;
-            pos4 = ev.clientY;
-
-            // Limites del campo
-            const parentRect = elmnt.parentElement.getBoundingClientRect();
-            let newTop = elmnt.offsetTop - pos2;
-            let newLeft = elmnt.offsetLeft - pos1;
-
-            if (newTop < 0) newTop = 0;
-            if (newLeft < 0) newLeft = 0;
-            if (newTop + elmnt.offsetHeight > parentRect.height) newTop = parentRect.height - elmnt.offsetHeight;
-            if (newLeft + elmnt.offsetWidth > parentRect.width) newLeft = parentRect.width - elmnt.offsetWidth;
-
-            elmnt.style.top = newTop + "px";
-            elmnt.style.left = newLeft + "px";
-
-            // Guardar en el estado para cuando cambiemos de pestaña
-            nodeDataRef.top = newTop + "px";
-            nodeDataRef.left = newLeft + "px";
-        }
-
-        function closeDragElement() {
-            document.onmouseup = null;
-            document.onmousemove = null;
-            document.ontouchend = null;
-            document.ontouchmove = null;
             
-            // Pequeño delay para no disparar el evento click inmediatamente después de soltar
-            setTimeout(() => { window.isDraggingNode = false; }, 50);
+            if (!dragging) return; 
+            e.preventDefault();
+            
+            p1 = p3 - ev.clientX; 
+            p2 = p4 - ev.clientY; 
+            p3 = ev.clientX; 
+            p4 = ev.clientY;
+            
+            const parent = el.parentElement.getBoundingClientRect();
+            let newTop = el.offsetTop - p2;
+            let newLeft = el.offsetLeft - p1;
+            
+            if (newTop < 0) newTop = 0; 
+            if (newLeft < 0) newLeft = 0;
+            if (newTop + el.offsetHeight > parent.height) newTop = parent.height - el.offsetHeight;
+            if (newLeft + el.offsetWidth > parent.width) newLeft = parent.width - el.offsetWidth;
+            
+            el.style.top = newTop + "px"; 
+            el.style.left = newLeft + "px"; 
+            ref.top = newTop + "px"; 
+            ref.left = newLeft + "px";
+        }
+        
+        function closeDrag() { 
+            document.onmouseup = null; 
+            document.onmousemove = null; 
+            document.ontouchend = null; 
+            document.ontouchmove = null; 
+            setTimeout(() => window.isDraggingNode = false, 50); 
         }
     }
 
-    function cerrarSesion() { localStorage.clear(); location.reload(); }
-    if(localStorage.getItem('playtracker_token')) configurarDashboard();
+    function cerrarSesion() { 
+        localStorage.clear(); 
+        location.reload(); 
+    }
+    
+    // Auto-login al cargar la página si el token existe
+    if(localStorage.getItem('playtracker_token')) {
+        configurarDashboard();
+    }
 </script>
-
 </body>
 </html>
