@@ -262,4 +262,55 @@ app.post('/api/asistencia', authMiddleware('Jugador'), async (req, res) => {
     } catch (error) { res.status(500).json({ error: 'Error' }); }
 });
 
+
+
+
+
+
+
+
+
+// ==========================================
+// MÓDULO DE ASISTENCIA Y ESTADO FÍSICO
+// ==========================================
+
+// 1. Endpoint para Guardar/Actualizar la asistencia y fatiga del atleta
+app.post('/api/asistencias', async (req, res) => {
+    const { evento_id, usuario_id, asiste, fatiga } = req.body;
+    try {
+        await db.query(`
+            INSERT INTO asistencias (evento_id, usuario_id, asiste, fatiga) 
+            VALUES (?, ?, ?, ?)
+            ON DUPLICATE KEY UPDATE asiste = VALUES(asiste), fatiga = VALUES(fatiga)
+        `, [evento_id, usuario_id, asiste, fatiga]);
+        
+        res.json({ success: true, message: 'Asistencia y estado físico guardados.' });
+    } catch (err) {
+        console.error("Error al registrar asistencia:", err);
+        res.status(500).json({ success: false, message: 'Error al guardar la asistencia.' });
+    }
+});
+
+// 2. Endpoint para que el Coach vea los detalles
+app.get('/api/asistencias/evento/:id', async (req, res) => {
+    const eventoId = req.params.id;
+    try {
+        const [asistencias] = await db.query(`
+            SELECT a.asiste, a.fatiga, u.nombre AS nombre_jugador 
+            FROM asistencias a
+            JOIN usuarios u ON a.usuario_id = u.id
+            WHERE a.evento_id = ?
+        `, [eventoId]);
+        
+        res.json({ success: true, asistencias });
+    } catch (err) {
+        console.error("Error consultando lista:", err);
+        res.status(500).json({ success: false, message: 'Error al consultar la lista.' });
+    }
+});
+
+module.exports = app;
+
+
+
 module.exports = app;
