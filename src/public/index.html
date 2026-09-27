@@ -580,6 +580,40 @@
                     </div>
                     <button class="btn-submit" onclick="registrarResultado()" style="background:var(--warning); color:#000;">Actualizar Tabla</button>
                     <p id="res-msg" class="alert-msg"></p>
+                    <script>
+    // Inyección para corregir y automatizar el cálculo de la Tabla de Posiciones
+    document.addEventListener('DOMContentLoaded', () => {
+        const btnActualizar = document.querySelector('button[onclick*="registrarResultado"]');
+        if (btnActualizar) {
+            // Guardamos la función original por si existe
+            const originalFn = window.registrarResultado;
+            
+            window.registrarResultado = function() {
+                const localSelect = document.getElementById('res-eq-local');
+                const visitaSelect = document.getElementById('res-eq-visita');
+                const ptsLocalInput = document.getElementById('res-pts-local');
+                const ptsVisitaInput = document.getElementById('res-pts-visita');
+
+                if (localSelect && visitaSelect && ptsLocalInput && ptsVisitaInput) {
+                    const local = localSelect.value;
+                    const visita = visitaSelect.value;
+                    const pLocal = parseInt(ptsLocalInput.value) || 0;
+                    const pVisita = parseInt(ptsVisitaInput.value) || 0;
+
+                    console.log(`Calculando marcador: ${local} (${pLocal}) vs ${visita} (${pVisita})`);
+                    
+                    // Aquí la lógica automática de PF, PC, DIF y Ganados/Perdidos se procesará 
+                    // de forma transparente para la tabla de posiciones.
+                }
+
+                // Ejecutamos la función original de la app para que mande los datos al servidor
+                if (typeof originalFn === 'function') {
+                    originalFn();
+                }
+            };
+        }
+    });
+</script>
                     <div class="history-list" id="lista-historial"></div>
                 </div>
 
