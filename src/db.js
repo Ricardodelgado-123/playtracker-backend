@@ -2,20 +2,26 @@ const mysql = require('mysql2/promise');
 const bcrypt = require('bcryptjs');
 
 const pool = mysql.createPool({
-    host: 'localhost',
-    port: 3307,
-    user: 'root',
-    password: '',
-    database: 'playtracker_db',
+    host: process.env.DB_HOST || 'localhost',
+    port: process.env.DB_PORT || 3307,
+    user: process.env.DB_USER || 'root',
+    password: process.env.DB_PASSWORD || '',
+    database: process.env.DB_NAME || 'playtracker_db',
     waitForConnections: true,
     connectionLimit: 10,
-    queueLimit: 0
+    queueLimit: 0,
+    connectTimeout: 20000 // Da más tiempo para conectar con DBs externas como Railway
 });
 
 async function initDB() {
     try {
-        await pool.query('CREATE DATABASE IF NOT EXISTS playtracker_db');
-        await pool.query('USE playtracker_db');
+        const dbName = process.env.DB_NAME || 'playtracker_db';
+        
+        // Evitamos el CREATE DATABASE en producción (Render/Railway ya te dan la base creada)
+        if (!process.env.DB_HOST || process.env.DB_HOST === 'localhost') {
+             await pool.query(`CREATE DATABASE IF NOT EXISTS \`${dbName}\``);
+        }
+        await pool.query(`USE \`${dbName}\``);
 
         // 1. EQUIPOS
         await pool.query(`
@@ -26,7 +32,7 @@ async function initDB() {
             )
         `);
 
-        // 2. USUARIOS (columna 'nombre', NO 'nombre_completo')
+        // 2. USUARIOS
         await pool.query(`
             CREATE TABLE IF NOT EXISTS usuarios (
                 id INT AUTO_INCREMENT PRIMARY KEY,
@@ -39,7 +45,7 @@ async function initDB() {
             )
         `);
 
-        // 3. POSICIONES (llave = nombre del equipo, tal como lo usa app.js)
+        // 3. POSICIONES
         await pool.query(`
             CREATE TABLE IF NOT EXISTS posiciones (
                 equipo VARCHAR(100) PRIMARY KEY,
@@ -54,7 +60,7 @@ async function initDB() {
             )
         `);
 
-        // 4. HISTORIAL DE RESULTADOS (nombre exacto que pide app.js)
+        // 4. HISTORIAL DE RESULTADOS
         await pool.query(`
             CREATE TABLE IF NOT EXISTS historial_resultados (
                 id INT AUTO_INCREMENT PRIMARY KEY,
@@ -66,7 +72,7 @@ async function initDB() {
             )
         `);
 
-        // 5. EVENTOS (Partidos y Entrenamientos) - no existía antes
+        // 5. EVENTOS
         await pool.query(`
             CREATE TABLE IF NOT EXISTS eventos (
                 id INT AUTO_INCREMENT PRIMARY KEY,
@@ -80,7 +86,7 @@ async function initDB() {
             )
         `);
 
-        // 6. ASISTENCIAS - no existía antes
+        // 6. ASISTENCIAS
         await pool.query(`
             CREATE TABLE IF NOT EXISTS asistencias (
                 id INT AUTO_INCREMENT PRIMARY KEY,
@@ -94,7 +100,7 @@ async function initDB() {
             )
         `);
 
-        // 7. Equipo "Liga" reservado en id=1 (app.js excluye este id de la lista de equipos)
+        // 7. Equipo "Liga" reservado en id=1
         const [equiposExistentes] = await pool.query('SELECT * FROM equipos WHERE id = 1');
         if (equiposExistentes.length === 0) {
             await pool.query('INSERT INTO equipos (id, nombre) VALUES (1, "Liga (Sistema)")');
